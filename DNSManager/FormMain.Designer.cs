@@ -48,8 +48,6 @@
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewMaskedTextColumn1 = new DNSManager.control.DataGridViewMaskedTextColumn();
-            this.dataGridViewMaskedTextColumn2 = new DNSManager.control.DataGridViewMaskedTextColumn();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -237,20 +235,6 @@
             this.Column4.Name = "Column4";
             this.Column4.ReadOnly = true;
             // 
-            // dataGridViewMaskedTextColumn1
-            // 
-            this.dataGridViewMaskedTextColumn1.HeaderText = "主DNS服务器";
-            this.dataGridViewMaskedTextColumn1.Mask = "099.099.099.099";
-            this.dataGridViewMaskedTextColumn1.Name = "dataGridViewMaskedTextColumn1";
-            this.dataGridViewMaskedTextColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // dataGridViewMaskedTextColumn2
-            // 
-            this.dataGridViewMaskedTextColumn2.HeaderText = "次DNS服务器";
-            this.dataGridViewMaskedTextColumn2.Mask = "";
-            this.dataGridViewMaskedTextColumn2.Name = "dataGridViewMaskedTextColumn2";
-            this.dataGridViewMaskedTextColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
             // FormMain
             // 
             this.AcceptButton = this.buttonAccept;
@@ -292,8 +276,6 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private control.DataGridViewMaskedTextColumn dataGridViewMaskedTextColumn1;
-        private control.DataGridViewMaskedTextColumn dataGridViewMaskedTextColumn2;
         private System.Windows.Forms.BindingSource bindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;

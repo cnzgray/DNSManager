@@ -10,7 +10,7 @@ namespace DNSManager
 {
     public partial class FormMain : Form
     {
-        private static readonly string CONFIG_FILE = "config.json";
+        private const string CONFIG_FILE = "config.json";
         private readonly List<DNSServer> dns = new List<DNSServer>();
 
         public FormMain()
@@ -26,7 +26,7 @@ namespace DNSManager
             {
                 if (dataGridView1.SelectedRows.Count > 0)
                 {
-                    return (DNSServer) dataGridView1.SelectedRows[0].DataBoundItem;
+                    return (DNSServer)dataGridView1.SelectedRows[0].DataBoundItem;
                 }
                 return null;
             }
@@ -34,15 +34,17 @@ namespace DNSManager
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            loadNI();
+            LoadNI();
 
             dns.AddRange(
                 (List<DNSServer>)
-                    SimpleJson.SimpleJson.DeserializeObject(File.ReadAllText(CONFIG_FILE), typeof (List<DNSServer>)));
+                    SimpleJson.SimpleJson.DeserializeObject(
+                        File.ReadAllText(CONFIG_FILE),
+                        typeof(List<DNSServer>)));
             bindingSource.DataSource = dns;
         }
 
-        private void loadNI()
+        private void LoadNI()
         {
             comboBoxNICList.Items.Clear();
 
@@ -50,10 +52,15 @@ namespace DNSManager
             foreach (var ni in interfaces)
             {
                 // 忽略Loopback类型的网卡
-                if (ni.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
+                if (ni.NetworkInterfaceType == NetworkInterfaceType.Loopback)
+                {
+                    continue;
+                }
 
                 if (ni.OperationalStatus == OperationalStatus.Up)
+                {
                     comboBoxNICList.Items.Add(ni);
+                }
             }
         }
 
@@ -71,7 +78,9 @@ namespace DNSManager
 
             if (ip.UnicastAddresses.Count > 0)
             {
-                builder.AppendFormat("IP:{0}\nMASK:{1}\n", ip.UnicastAddresses[0].Address.MapToIPv4(),
+                builder.AppendFormat(
+                    "IP:{0}\nMASK:{1}\n",
+                    ip.UnicastAddresses[0].Address.MapToIPv4(),
                     ip.UnicastAddresses[0].IPv4Mask);
             }
 
@@ -80,9 +89,13 @@ namespace DNSManager
                 builder.AppendFormat("GAYEWAY:{0}\n", ip.GatewayAddresses[0].Address.MapToIPv4());
             }
             if (ip.DnsAddresses.Count >= 1)
+            {
                 builder.AppendFormat("DNS1:{0}\n", ip.DnsAddresses[0].MapToIPv4());
+            }
             if (ip.DnsAddresses.Count >= 2)
+            {
                 builder.AppendFormat("DNS2:{0}\n", ip.DnsAddresses[1].MapToIPv4());
+            }
 
             labelNicInfo.Text = builder.ToString();
         }
@@ -96,30 +109,38 @@ namespace DNSManager
         {
             var dnsServer = CurrentDNSServer;
             var ni = CurrentInterface;
-            if (dnsServer == null) return;
-            if (ni == null) return;
+            if (dnsServer == null)
+            {
+                return;
+            }
+            if (ni == null)
+            {
+                return;
+            }
 
             var wmi = new ManagementClass("Win32_NetworkAdapterConfiguration");
             var moc = wmi.GetInstances();
             foreach (var o in moc)
             {
-                var mo = (ManagementObject) o;
+                var mo = (ManagementObject)o;
                 //如果没有启用IP设置的网络设备则跳过
                 if (ni.Id.Equals(mo["SettingId"]) == false)
+                {
                     continue;
+                }
                 var inPar = mo.GetMethodParameters("SetDNSServerSearchOrder");
                 inPar["DNSServerSearchOrder"] = new[]
                 {
                     dnsServer.Server1, dnsServer.Server2
                 };
-                var outPar = mo.InvokeMethod("SetDNSServerSearchOrder", inPar, null);
+                mo.InvokeMethod("SetDNSServerSearchOrder", inPar, null);
                 break;
             }
 
             wmi.Dispose();
 
             MessageBox.Show("设置DNS成功");
-            loadNI();
+            LoadNI();
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
